@@ -1,31 +1,38 @@
 options:
-	time: 5
+	time: 5 #czas w sekundach po jakim ma teleportowac
 
-command /spawn:
-	trigger:
-		player has permission "spawn.spawn":
-			set {_pos} to location of player
-			set {_time} to {@time}
-			send "&eZostaniesz przeniesiony na spawn za &7%{_time}% sek&e. Nie ruszaj sie!"
-			add -1 to {_time}
-			wait 1 second
-			loop {@time} times:
-				send "&eTeleportacja nastapi za &7%{_time}% sek&e."
-				location of player is not {_pos}:
-					send "&eTeleportacja przerwana."
-					stop trigger
-				add -1 to {_time}
-				{_time} is 0:
-					teleport player to {spawn}
-					send "&eZostales przeniesiony na spawn."
-					stop trigger
-				wait 1 second
-			stop
-		send "&eNie mozesz uzywac tej komendy."
 command /setspawn:
 	trigger:
 		player has permission "spawn.setspawn":
 			set {spawn} to location of player
-			send "&eUstawiles spawn na koordach: &7%location of player%"
+			send "&eUstawiles spawn."
 			stop
 		send "&eNie mozesz uzywac tej komendy."
+
+command /spawn:
+	trigger:
+		{spawn} is set:
+			set {_pos} to location of player
+			set {_time} to {@time}
+			send "&eZostaniesz przeniesiony na spawn za &7%{_time}% sek&e. Nie ruszaj sie!"
+			wait 1 second
+			loop {@time} times:
+				location of player is not {_pos}:
+					send "&eTeleportacja przerwana."
+					stop
+				add -1 to {_time}
+				{_time} is 0:
+					teleport player to {spawn}
+					send "&eZostales przeniesiony na spawn."
+					stop
+				send "&eTeleportacja nastapi za &7%{_time}% sek&e."
+				wait 1 second
+			stop
+		send "&eUstaw najpierw spawn. &7/setspawn"
+
+on first login:
+	wait 1 tick
+	teleport player to {spawn}
+on respawn:
+	wait 1 tick
+	teleport player to {spawn}
