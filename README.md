@@ -1,4 +1,5 @@
 Skrypty
 =======
 
-[skript] różne inne skrypty dla pluginu skript
+Wszystkie skrypty tu umieszczone są mojego autorstwa.
+Adam Poloczek (PiratJaskiniowy)
