@@ -1,5 +1,5 @@
 Skrypty
 =======
 
-Wszystkie skrypty tu umieszczone są mojego autorstwa.
-Adam Poloczek (PiratJaskiniowy)
+>Wszystkie skrypty tu umieszczone są mojego autorstwa.<br>
+>Adam Poloczek (PiratJaskiniowy)
