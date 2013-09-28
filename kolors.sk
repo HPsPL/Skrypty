@@ -1,0 +1,10 @@
+on chat:
+	player has permission "kolors.chat":
+		set message to coloured message
+
+on sign change:
+	player has permission "kolors.tabliczki":
+		set line 1 to coloured line 1
+		set line 1 to coloured line 2
+		set line 1 to coloured line 3
+		set line 1 to coloured line 4
