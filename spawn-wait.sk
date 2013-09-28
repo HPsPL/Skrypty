@@ -1,0 +1,25 @@
+options:
+	time: 5 #czas w sekundach po jakim ma teleportowac
+
+variables:
+	{tp.%player%} = "false"
+on command "spawn":
+	{tp.%player%} is "false":
+		cancel event
+		set {_pos} to location of player
+		set {_time} to {@time}
+		send "&eZostaniesz przeniesiony na spawn za &7%{_time}% sek&e. Nie ruszaj sie!"
+		wait 1 second
+		loop {@time} times:
+			location of player is not {_pos}:
+				send "&eTeleportacja przerwana."
+				stop
+			add -1 to {_time}
+			send "&eTeleportacja nastapi za &7%{_time}% sek&e."
+			{_time} is 0:
+				set {tp.%player%} to "true"
+				make player execute command "spawn"
+				send "&eZostales przeniesiony na spawn."
+				wait 1 second
+				set {tp.%player%} to "false"
+			wait 1 second
