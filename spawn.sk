@@ -12,13 +12,23 @@ command /setspawn:
 command /spawn:
 	trigger:
 		{spawn} is set:
-			set {_pos} to location of player
+			set {_posx} to x-location of player
+			set {_posz} to z-location of player
+			set {_posy} to y-location of player
 			set {_time} to {@time}
-			apply nausea to player for 2 minutes
+			apply nausea to player for 3 minutes
 			send "&eZostaniesz przeniesiony na spawn za &7%{_time}% sek&e. Nie ruszaj sie!"
 			wait 1 second
 			loop {@time} times:
-				location of player is not {_pos}:
+				difference between x-location of player and {_posx} is bigger than 0.5:
+					send "&eTeleportacja przerwana."
+					remove nausea from the player
+					stop
+				difference between z-location of player and {_posz} is bigger than 0.5:
+					send "&eTeleportacja przerwana."
+					remove nausea from the player
+					stop
+				difference between y-location of player and {_posy} is bigger than 0.5:
 					send "&eTeleportacja przerwana."
 					remove nausea from the player
 					stop
