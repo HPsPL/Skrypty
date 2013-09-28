@@ -1,0 +1,65 @@
+#        __ _     _   _    _           
+#  __ _ / _| |__ | |_(_)__| |_____ _ _ 
+# / _` |  _| / / | / / / _| / / -_) '_|
+# \__,_|_| |_\_\ |_\_\_\__|_\_\___|_| 
+# wersja(version): 1.0.0
+# - - -
+# Wsparcie(support): ...
+# - - -
+# Autor(author): Adam Poloczek
+# Autor URL(author url): http://adampoloczek.pl
+#
+
+#
+# Uprawnienia:
+#	afkkicker.nokick - gdy gracz jest nieaktywny przez czas ustawiony w konfiguracji wyrzuca gracza z serwera
+#
+
+options:
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+#                      = = = = = = = = =                        #
+#                        KONFIGURACJA                           #
+#                         (confing)                             #
+#                      = = = = = = = = =                        #
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+	czas: 5                       #czas w minutach po którym gracz zostanie wyrzucony
+	msg: Byles afk.               #wiadomość która wyświetli się po wyrzuceniu z gry
+
+
+# UWAGA! Edytowanie dalszej części skryptu może skutkować zakłuceniem jego poprawnego działania.
+# WARNING!
+
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+#                      = = = = = = = = =                        #
+#                         KOD SKRYPTU                           #
+#                        (script code)                          #
+#                      = = = = = = = = =                        #
+# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+every {@czas} minutes:
+	loop all players:
+		set {afk.loc1.%loop-player%} to location of loop-player
+		set {_afk.chat} to {@czas} * 2
+		wait 1 second
+		{afk.loc1.%loop-player%} is {afk.loc2.%loop-player%}:
+			{afk.chat.%loop-player%} is {_afk.chat}:
+				loop-player don't have permission "afkkicker.nokick":
+					kick loop-player due to "{@msg}"
+					stop
+
+every 30 seconds:
+	loop all players:
+		set {afk.loc2.%loop-player%} to location of loop-player
+		add 1 to {afk.chat.%loop-player%}
+
+on join:
+	loop all players:
+		set {afk.loc1.%loop-player%} to location of loop-player
+		set {afk.chat.%loop-player%} to "0"
+
+on script load:
+	loop all players:
+		set {afk.loc1.%loop-player%} to location of loop-player
+		set {afk.chat.%loop-player%} to "0"
+
+on chat:
+	set {afk.chat.%player%} to "0"
