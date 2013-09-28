@@ -14,7 +14,7 @@ command /spawn:
 		{spawn} is set:
 			set {_pos} to location of player
 			set {_time} to {@time}
-			apply nausea to player for 3 minutes
+			apply nausea to player for 2 minutes
 			send "&eZostaniesz przeniesiony na spawn za &7%{_time}% sek&e. Nie ruszaj sie!"
 			wait 1 second
 			loop {@time} times:
