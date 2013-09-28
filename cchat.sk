@@ -1,0 +1,42 @@
+# cChat
+# - - - - - -
+# Autor: Adam Poloczek (PiratJaskiniowy)
+# - - - - - -
+# Komendy/funkcje:
+# | komenda | uprawnienie | opis
+# | /cc | chat.clean | czyści czat
+# | --- | chat.notime | pozwala pisać bez ograniczeń czasowych
+#
+options:
+	# czas co jaki można napisać wiadomość (w sekundach)
+	chat_time: 3
+	# wiadomość wyświtlająca się gdy zbyt szybko spróbujemy napisać wiadomość
+	chat_msg_wait: &cMusisz odczekac 3 sekundy zanim napiszesz następna wiadomosc!
+
+# Właściwy kod skryptu. [Nie edytować!]
+
+# ograniczenie czasowe między wiadomościami
+on chat:
+	player does not have permission "chat.notime":
+		{chat.%player%} is false:
+			cancel event
+			send "{@chat_msg_wait}"
+			stop
+		set {chat.%player%} to false
+		wait {@chat_time} seconds
+		set {chat.%player%} to true
+		stop
+
+# czyszczenie czatu
+command /cc:
+	trigger:
+		sender is console:
+			loop 100 times:
+				send "" to all players
+			send "&c[cChat] &fWyczysciles czat."
+			stop
+		player has permission "chat.clear":
+			loop 100 times:
+				send "" to all players
+			send "&c[cChat] &fWyczysciles czat."
+			stop
