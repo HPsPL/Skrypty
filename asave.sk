@@ -1,0 +1,16 @@
+# aSave
+# - - - - - -
+# Autor: Adam Poloczek (PiratJaskiniowy)
+# - - - - - -
+#
+options:
+	# czas co jaki mapa będzie się zapisywać (w minutach)
+	asave_time: 10
+
+# Właściwy kod skryptu. [Nie edytować!]
+
+# automatyczny zapis mapy
+every {@asave_time} minutes:
+	broadcast "Automatyczne zapisywanie swiata."
+	execute console command "save-all"
+	broadcast "Automatyczne zapisywanie swiata zakonczone."
