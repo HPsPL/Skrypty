@@ -1,8 +1,6 @@
 options:
 	time: 5 #czas w sekundach po jakim ma teleportowac
 
-variables:
-	{tp.%player%} = "false"
 on command "spawn":
 	{tp.%player%} is "false":
 		cancel event
@@ -37,3 +35,5 @@ on command "spawn":
 				stop
 			send "&eTeleportacja nastapi za &7%{_time}% sek&e."
 			wait 1 second
+		stop
+	set {tp.%player%} to true
