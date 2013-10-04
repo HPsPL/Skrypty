@@ -34,7 +34,7 @@ command /home:
 					stop
 				add -1 to {_time}
 				{_time} is 0:
-					teleport player to {spawn}
+					teleport player to {home.%player%}
 					remove nausea from the player
 					send "&eWitaj w domu!"
 					stop
