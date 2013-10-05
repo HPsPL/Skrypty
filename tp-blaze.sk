@@ -10,23 +10,23 @@ on right click with blaze rod:
 	send "&b*&aTeleportacja nastapi za: &7%{_time}%"
 	wait 1 second
 	loop {@time} times:
-	difference between x-location of player and {_posx} is bigger than 0.5:
-		send "&b*&cTeleportacja przerwana."
-		remove nausea from the player
-		stop
-	difference between z-location of player and {_posz} is bigger than 0.5:
-		send "&b*&cTeleportacja przerwana."
-		remove nausea from the player
-		stop
-	difference between y-location of player and {_posy} is bigger than 0.5:
-		send "&b*&cTeleportacja przerwana."
-		remove nausea from the player
-		stop
-	add -1 to {_time}
-	{_time} is 0:
-		teleport player to spawn
-		remove nausea from the player
-		send "&b*&6Teleportacja"
-		stop
-	send "&b*&aTeleportacja nastapi za: &c%{_time}%"
-	wait 1 second
+		difference between x-location of player and {_posx} is bigger than 0.5:
+			send "&b*&cTeleportacja przerwana."
+			remove nausea from the player
+			stop
+		difference between z-location of player and {_posz} is bigger than 0.5:
+			send "&b*&cTeleportacja przerwana."
+			remove nausea from the player
+			stop
+		difference between y-location of player and {_posy} is bigger than 0.5:
+			send "&b*&cTeleportacja przerwana."
+			remove nausea from the player
+			stop
+		add -1 to {_time}
+		{_time} is 0:
+			teleport player to spawn
+			remove nausea from the player
+			send "&b*&6Teleportacja"
+			stop
+		send "&b*&aTeleportacja nastapi za: &c%{_time}%"
+		wait 1 second
