@@ -1,5 +1,5 @@
 options:
-	time: 7 # Czas w skeundach po którym ma teleportować
+	time: 7 # Czas w skeundach po którym nastąpi teleportacja
 on right click with blaze rod:
 	remove blaze rod from player
 	set {_posx} to x-location of player
