@@ -1,40 +1,11 @@
-#        __ _     _   _    _           
-#  __ _ / _| |__ | |_(_)__| |_____ _ _ 
-# / _` |  _| / / | / / / _| / / -_) '_|
-# \__,_|_| |_\_\ |_\_\_\__|_\_\___|_| 
-# wersja(version): 1.0.0
-# - - -
-# Wsparcie(support): ...
-# - - -
-# Autor(author): Adam Poloczek
-# Autor URL(author url): http://adampoloczek.pl
-#
-
-#
 # Uprawnienia:
 #	afkkicker.nokick - gdy gracz jest nieaktywny przez czas ustawiony w konfiguracji wyrzuca gracza z serwera
-#
 
 options:
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-#                      = = = = = = = = =                        #
-#                        KONFIGURACJA                           #
-#                         (confing)                             #
-#                      = = = = = = = = =                        #
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
+# Konfiguracja:
 	czas: 5                       #czas w minutach po którym gracz zostanie wyrzucony
 	msg: Byles afk.               #wiadomość która wyświetli się po wyrzuceniu z gry
 
-
-# UWAGA! Edytowanie dalszej części skryptu może skutkować zakłuceniem jego poprawnego działania.
-# WARNING!
-
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
-#                      = = = = = = = = =                        #
-#                         KOD SKRYPTU                           #
-#                        (script code)                          #
-#                      = = = = = = = = =                        #
-# - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - #
 every {@czas} minutes:
 	loop all players:
 		set {afk.loc1.%loop-player%} to location of loop-player
