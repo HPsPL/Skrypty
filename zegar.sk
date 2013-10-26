@@ -1,0 +1,27 @@
+every 1 seconds:
+	add 1 to {zegar.sekundy}
+	{zegar.sekundy} is 60:
+		add 1 to {zegar.minuty}
+		set {zegar.sekundy} to 0
+	{zegar.minuty} is 60:
+		add 1 to {zegar.godziny}
+		set {zegar.minuty} to 0
+	{zegar.godziny} is 24:
+		set {zegar.sekundy} to 0
+		set {zegar.minuty} to 0
+		set {zegar.godziny} to 0
+	set {zegar.godzina} to "%{zegar.godziny}%:%{zegar.minuty}%:%{zegar.sekundy}%"
+command /zegar [<integer>] [<integer>] [<integer>]:
+	trigger:
+		sender is console:
+			arg 1 is set:
+				set {zegar.godziny} to arg 1
+			arg 2 is set:
+				set {zegar.minuty} to arg 2
+			arg 3 is set:
+				set {zegar.sekundy} to arg 3
+			stop
+		kick player due to "Majstrowanie przy czasie jest niebezpieczne!"
+on script load:
+	send "&f[zegar] Aktualny czas: &7%{zegar.godzina}%" to console
+	send "&f[zegar] Aby ustawic czas wpisz &7/zegar <godziny> <minuty> <sekundy>"	
