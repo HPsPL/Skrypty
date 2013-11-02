@@ -1,3 +1,5 @@
+# Zegar v1.1.0
+# Autor: Adam Poloczek (PiratJaskiniowy)
 every 1 seconds:
 	add 1 to {zegar.sekundy}
 	{zegar.sekundy} is 60:
