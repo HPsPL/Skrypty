@@ -22,9 +22,9 @@ command /zegar [<integer>] [<integer>] [<integer>]:
 					set {zegar.minuty} to arg 2
 					arg 3 is set:
 						set {zegar.sekundy} to arg 3
-				send "&fCzas: &7%{zegar.godziny}%:%{zegar.minuty}%:%{zegar.sekundy}%"
+				send "&f[zegar] Aktualny czas: &7%{zegar.godziny}%:%{zegar.minuty}%:%{zegar.sekundy}%"
 				stop
-			send "&fCzas: &7%{zegar.godzina}%"
+			send "&f[zegar] Aktualny czas: &7%{zegar.godzina}%"
 			stop
 		kick player due to "Majstrowanie przy czasie jest niebezpieczne!"
 on script load:
