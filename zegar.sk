@@ -2,13 +2,13 @@
 # Autor: Adam Poloczek (PiratJaskiniowy)
 every 1 seconds:
 	add 1 to {zegar.sekundy}
-	{zegar.sekundy} is 60:
+	{zegar.sekundy} is greater than or equal to 60:
 		add 1 to {zegar.minuty}
 		set {zegar.sekundy} to 0
-	{zegar.minuty} is 60:
+	{zegar.minuty} is greater than or equal to 60:
 		add 1 to {zegar.godziny}
 		set {zegar.minuty} to 0
-	{zegar.godziny} is 24:
+	{zegar.godziny} is greater than or equal to 24:
 		set {zegar.sekundy} to 0
 		set {zegar.minuty} to 0
 		set {zegar.godziny} to 0
