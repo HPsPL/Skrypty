@@ -4,7 +4,7 @@
 # - - - - - -
 # Komendy:
 # | komenda | uprawnienie | opis
-# | /infobot | infobot.reload | przeładowuje wiadomośći
+# | /infobot | infobot.reload | przeładowuje wiadomości
 #
 # Skrypt wykorzystuje następujące zmienne(nie używać w innych skryptach):
 # {msg}, {msg1}, {msg2}, {msg3}, {msg4} itd.
@@ -19,7 +19,6 @@ options:
 	msg_time: 2
 
 variables:
-	{msg} = 0
 	# Wiadomości. (w razie potrzeby dopisujemy następne linijki)
 	# Pamiętaj! Po zmianach w tym miejscu upewnij się, że liczba wiadomości jest zgodna z tą podaną wyżej oraz użyj komendy /infobot.
 	{msg1} = "&fWiadomosc nr1"
@@ -32,8 +31,7 @@ variables:
 	# itd. ...
 
 # Właściwy kod skryptu. [Nie edytować!]
-
-#resety wiadomości
+# przeładowanie wiadomości
 command /infobot:
 	trigger:
 		sender is console:
@@ -41,7 +39,7 @@ command /infobot:
 			loop {@msg_amount} times:
 				add 1 to {_msg}
 				delete {msg%{_msg}%}
-			execute command "sk reload %script%"
+			execute console command "sk reload %script%"
 			send "&f&l[InfoBot] &fPrzeladowales wiadomosci."
 			stop	
 		player has permission "infobot.reload":
@@ -49,16 +47,16 @@ command /infobot:
 			loop {@msg_amount} times:
 				add 1 to {_msg}
 				delete {msg%{_msg}%}
-			execute command "sk reload %script%"
+			execute console command "sk reload %script%"
 			send "&f&l[InfoBot] &fPrzeladowales wiadomosci."
 			stop
-
-on skript start:
+on script load:
+	set {msg} to 0
 	set {_msg} to 0
 	loop {@msg_amount} times:
 		add 1 to {_msg}
 		delete {msg%{_msg}%}
-	execute command "sk reload %script%"
+	execute console command "sk reload %script%"
 
 # wysyłacz wiadomości
 every {@msg_time} minutes:
