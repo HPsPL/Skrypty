@@ -1,0 +1,499 @@
+#----------------------------------------------------- WarpBox ------------------------------------------------------#
+#--------------------------------------- © by Adam Poloczek (PiratJaskiniowy) ---------------------------------------#
+# Wersja: 1.4.0
+# Autor: Adam Poloczek (PiratJaskiniowy)
+# URL: http://adampoloczek.pl/link/warpbox/
+# Skript: 2.0.2
+
+#------------------------------------------------------#
+# Licencja:                                            #
+# CC Attribution-NonCommercial-ShareAlike 3.0 Unported #
+# http://creativecommons.org/licenses/by-nc-sa/3.0/    #
+#------------------------------------------------------#
+# Co to oznacza?                                       #
+# ZAKAZ przywłaszczania sobie autorstwa skryptu        #
+# ZAKAZ zarabiania na skrypcie                         #
+# ZAKAZ usuwania tresci zawierajacych informacje       #
+#       o autorze                                      #
+# ZAKAZ podszywania sie pod autora                     #
+# MOŻESZ edytować i rozpowszechniać zmieniony skrypt   #
+#        |pamiętaj jednak aby nie usunąć informacji|   #
+#        |o orginalnym autorze                     |   #
+#------------------------------------------------------#
+
+#------------------------------------------------------#
+# Skrypt korzysta ze zmiennych:                        #
+# [Nie używać w innych skryptach!]                     #
+# {warpbox.dalsza_nazwa_zmiennej}                      #
+#------------------------------------------------------#
+
+#------------------------------------------------------#
+#                    KONFIGURACJA                      #
+#------------------------------------------------------#
+options:
+	# czy opuźnienie teleportu ma być aktywne (true/false)
+	wb_wait: false
+	# jeśli opuźnienie(trzeba odczekać w bezruchu) teleportu jest aktywne - ile ma ono trwać? (w sekundach)
+	wb_wait_time: 5
+
+	# osobne uprawnienie do każdego warpu (w postaci: warpbox.warp.nazwa_warpu) (true/false)
+	wp_per_warp_perm: false
+
+	# efekty dźwiękowe przy teleportacji
+	wb_effects_sound: false
+	# efekty wizualne przy oczekiwaniu na teleportacje (gdy opcja wb_wait jest włączona)
+	wb_effects_visual: false
+
+# UWAGA! Edytowanie dalszej części skryptu może skutkować zakłuceniem jego poprawnego działania.
+#---------------------------------------------------- KOD SKRYPTU ---------------------------------------------------#
+#--------------------------------------------------- (script code) --------------------------------------------------#
+	version: 1.4.0
+#------------------------------------------------------#
+#                Główne komendy skryptu                #
+#------------------------------------------------------#
+command /warp [<text>]:
+	aliases: skoczdo
+	trigger:
+		sender is console:
+			send "&f&l[&fwarpbox&l] &7Wejdz do gry aby uzywac tej komendy."
+			stop
+		player has permission "warpbox.*" or "warpbox.warp":
+			arg is set:
+				{warpbox.warp.%arg%} is set:
+					{@wp_per_warp_perm} is true:
+						player has permission "warpbox.*" or "warpbox.warp.%arg%" or "warpbox.warp.*":
+							{@wb_wait} is true:
+								player does not have permission "warpbox.nieczekaj":
+									send "&f&l[&fwarpbox&l] &7Teleportacja nastapi za &f{@wb_wait_time} &7sek. (nie ruszaj sie)"
+									set {_posx} to x-location of player
+									set {_posy} to y-location of player
+									set {_posz} to z-location of player
+									set {_time} to {@wb_wait_time}
+									{@wb_effects_visual} is true:
+										apply nausea to player for 3 minutes
+									wait 1 second
+									loop {@wb_wait_time} times:
+										difference between x-location of player and {_posx} is bigger than 0.5:
+											send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+											{@wb_effects_visual} is true:
+												remove nausea from the player
+											stop
+										difference between z-location of player and {_posz} is bigger than 0.5:
+											send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+											{@wb_effects_visual} is true:
+												remove nausea from the player
+											stop
+										difference between y-location of player and {_posy} is bigger than 0.5:
+											send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+											{@wb_effects_visual} is true:
+												remove nausea from the player
+											stop
+										add -1 to {_time}
+										{_time} is 0:
+											{@wb_effects_sound} is true:
+												loop players in radius 4 around player:
+													execute console command "playsound mob.endermen.portal %loop-player%"
+												execute console command "playsound mob.endermen.portal %name of player%"
+											teleport player to {warpbox.warp.%arg%}
+											{@wb_effects_sound} is true:
+												loop players in radius 4 around player:
+													execute console command "playsound mob.endermen.portal %loop-player%"
+												execute console command "playsound mob.endermen.portal %name of player%"
+											send "&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f%arg%&7."
+											{@wb_effects_visual} is true:
+												remove nausea from the player
+											stop
+										{_time} is smaller than 4:
+											send "&f&l[&fwarpbox&l] &7Teleportacja nastapi za &f%{_time}%&7."
+										wait 1 second
+							{@wb_effects_sound} is true:
+								loop players in radius 4 around player:
+									execute console command "playsound mob.endermen.portal %loop-player%"
+								execute console command "playsound mob.endermen.portal %name of player%"
+							teleport player to {warpbox.warp.%arg%}
+							{@wb_effects_sound} is true:
+								loop players in radius 4 around player:
+									execute console command "playsound mob.endermen.portal %loop-player%"
+								execute console command "playsound mob.endermen.portal %name of player%"
+							send "&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f%arg%&7."
+							stop
+						send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac tego warpu."
+						stop
+					{@wb_wait} is true:
+						player does not have permission "warpbox.nieczekaj":
+							send "&f&l[&fwarpbox&l] &7Teleportacja nastapi za &f{@wb_wait_time} &7sek. (nie ruszaj sie)"
+							set {_posx} to x-location of player
+							set {_posy} to y-location of player
+							set {_posz} to z-location of player
+							set {_time} to {@wb_wait_time}
+							{@wb_effects_visual} is true:
+								apply nausea to player for 3 minutes
+							wait 1 second
+							loop {@wb_wait_time} times:
+								difference between x-location of player and {_posx} is bigger than 0.5:
+									send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+									{@wb_effects_visual} is true:
+										remove nausea from the player
+									stop
+								difference between z-location of player and {_posz} is bigger than 0.5:
+									send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+									{@wb_effects_visual} is true:
+										remove nausea from the player
+									stop
+								difference between y-location of player and {_posy} is bigger than 0.5:
+									send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+									{@wb_effects_visual} is true:
+										remove nausea from the player
+									stop
+								add -1 to {_time}
+								{_time} is 0:
+									{@wb_effects_sound} is true:
+										loop players in radius 4 around player:
+											execute console command "playsound mob.endermen.portal %loop-player%"
+										execute console command "playsound mob.endermen.portal %name of player%"
+									teleport player to {warpbox.warp.%arg%}
+									{@wb_effects_sound} is true:
+										loop players in radius 4 around player:
+											execute console command "playsound mob.endermen.portal %loop-player%"
+										execute console command "playsound mob.endermen.portal %name of player%"
+									send "&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f%arg%&7."
+									{@wb_effects_visual} is true:
+										remove nausea from the player
+									stop
+								{_time} is smaller than 4:
+									send "&f&l[&fwarpbox&l] &7Teleportacja nastapi za &f%{_time}%&7."
+								wait 1 second
+					{@wb_effects_sound} is true:
+						loop players in radius 4 around player:
+							execute console command "playsound mob.endermen.portal %loop-player%"
+						execute console command "playsound mob.endermen.portal %name of player%"
+					teleport player to {warpbox.warp.%arg%}
+					{@wb_effects_sound} is true:
+						loop players in radius 4 around player:
+							execute console command "playsound mob.endermen.portal %loop-player%"
+						execute console command "playsound mob.endermen.portal %name of player%"
+					send "&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f%arg%&7."
+					stop
+				send "&f&l[&fwarpbox&l] &7Taki warp nie istnieje. &f/warps"
+				stop
+			send "&f&l[&fwarpbox&l] &7Podaj nazwe warpa. &f/warp <nazwa warpa>"
+			stop
+		send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy."
+		stop
+
+command /setwarp [<text>]:
+	aliases: ustawwarp
+	trigger:
+		sender is console:
+			send "&f&l[&fwarpbox&l] &7Wejdz do gry aby uzywac tej komendy."
+			stop
+		player has permission "warpbox.*" or "warpbox.tworz":
+			arg is set:
+				{warpbox.warp.%arg%} is not set:
+					set {warpbox.warp.%argument%} to location of player
+					{@wb_effects_sound} is true:
+						execute console command "playsound note.bd %name of player%"
+					wait 1 tick
+					add "%arg%" to {warpbox.warplist::*}
+					send "&f&l[&fwarpbox&l] &7Stworzyles warp &f%arg%&7."
+					stop
+				send "&f&l[&fwarpbox&l] &7Taki warp juz istnieje. &f/delwarp <nazwa warpa>"
+				stop
+			send "&f&l[&fwarpbox&l] &7Podaj nazwe warpa. &f/setwarp <nazwa warpa>"
+			stop
+		send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy."
+		stop
+
+command /delwarp [<text>]:
+	aliases: usunwarp
+	trigger:
+		sender is console:
+			arg is set:
+				{warpbox.warp.%arg%} is set:
+					delete {warpbox.warp.%arg%}
+					remove "%arg%" from {warpbox.warplist::*}
+					send "&f&l[&fwarpbox&l] &7Warp &f%arg%&7 zostal usuniety."
+					stop
+				send "&f&l[&fwarpbox&l] &7Taki nie istnieje. &f/listawarpow"
+				stop
+			send "&f&l[&fwarpbox&l] &7Podaj nazwe warpa. &f/usunwarp <nazwa warpa>"
+			stop
+		player has permission "warpbox.*" or "warpbox.usun":
+			arg is set:
+				{warpbox.warp.%arg%} is set:
+					delete {warpbox.warp.%arg%}
+					{@wb_effects_sound} is true:
+						execute console command "playsound note.snare %name of player%"
+					remove "%arg%" from {warpbox.warplist::*}
+					send "&f&l[&fwarpbox&l] &7Warp &f%arg%&7 zostal usuniety."
+					stop
+				send "&f&l[&fwarpbox&l] &7Taki warp nie istnieje. &f/listawarpow"
+				stop
+			send "&f&l[&fwarpbox&l] &7Podaj nazwe warpa. &f/usunwarp <nazwa warpa>"
+			stop
+		send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy."
+		stop
+
+command /warps:
+	aliases: warplist, listawarpow
+	trigger:
+		sender is console:
+			{warpbox.warplist::*} is set:
+				send "&f&l[&fwarpbox&l] &7Lista warpow:"
+				send "%{warpbox.warplist::*}%"
+				stop
+			send "&f&l[&fwarpbox&l] &7Brak dostepnych warpow."
+			stop
+		player has permission "warpbox.*" or "warpbox.lista":
+			{warpbox.warplist::*} is set:
+				send "&f&l[&fwarpbox&l] &7Lista warpow:"
+				send "%{warpbox.warplist::*}%"
+				stop
+			send "&f&l[&fwarpbox&l] &7Brak dostepnych warpow."
+			stop
+		send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy."
+		stop
+
+#------------------------------------------------------#
+#                       Tabliczki                      #
+#------------------------------------------------------#
+on sign change:
+	line 1 is "&f[WarpBox]":
+		player does not have permission "warpbox.*" or "warpbox.tabliczki.tworz":
+			cancel event
+			send "&f&l[&fwarpbox&l] &7Nie mozesz tworzyc takich tabliczek."
+			stop
+	line 1 is "[wb]" or "[warp]":
+		player has permission "warpbox.*" or "warpbox.tabliczki.tworz":
+			line 2 is not empty:
+				{warpbox.warp.%line 2%} is set:
+					set line 1 to "&f[WarpBox]"
+					send "&f&l[&fwarpbox&l] &7Pomyslnie utworzono tabliczke przenoszaca do &f%line 2%&7."
+					stop
+				send "&f&l[&fwarpbox&l] &7Taki warp nie istnieje. &f/ustawwarp <nazwa warpu>"
+			stop
+		send "&f&l[&fwarpbox&l] &7Nie mozesz tworzyc takich tabliczek."
+		stop
+
+on right click on sign:
+	line 1 of clicked block is "&f[WarpBox]":
+		player has permission "warpbox.*" or "warpbox.tabliczki":
+			line 2 of clicked block is not empty:
+				{warpbox.warp.%line 2 of clicked block%} is set:
+					{@wp_per_warp_perm} is true:
+						player has permission "warpbox.*" or "warpbox.warp.%line 2 of clicked block%" or "warpbox.warp.*":
+							{@wb_wait} is true:
+								player does not have permission "warpbox.nieczekaj":
+									send "&f&l[&fwarpbox&l] &7Teleportacja nastapi za &f{@wb_wait_time} &7sek. (nie ruszaj sie)"
+									set {_posx} to x-location of player
+									set {_posy} to y-location of player
+									set {_posz} to z-location of player
+									set {_time} to {@wb_wait_time}
+									{@wb_effects_visual} is true:
+										apply nausea to player for 3 minutes
+									wait 1 second
+									loop {@wb_wait_time} times:
+										difference between x-location of player and {_posx} is bigger than 0.5:
+											send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+											{@wb_effects_visual} is true:
+												remove nausea from the player
+											stop
+										difference between z-location of player and {_posz} is bigger than 0.5:
+											send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+											{@wb_effects_visual} is true:
+												remove nausea from the player
+											stop
+										difference between y-location of player and {_posy} is bigger than 0.5:
+											send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+											{@wb_effects_visual} is true:
+												remove nausea from the player
+											stop
+										add -1 to {_time}
+										{_time} is 0:
+											{@wb_effects_sound} is true:
+												loop players in radius 4 around player:
+													execute console command "playsound mob.endermen.portal %loop-player%"
+												execute console command "playsound mob.endermen.portal %name of player%"
+											teleport player to {warpbox.warp.%line 2 of clicked block%}
+											{@wb_effects_sound} is true:
+												loop players in radius 4 around player:
+													execute console command "playsound mob.endermen.portal %loop-player%"
+												execute console command "playsound mob.endermen.portal %name of player%"
+											send "&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f%line 2 of clicked block%&7."
+											{@wb_effects_visual} is true:
+												remove nausea from the player
+											stop
+										{_time} is smaller than 4:
+											send "&f&l[&fwarpbox&l] &7Teleportacja nastapi za &f%{_time}%&7."
+										wait 1 second
+							{@wb_effects_sound} is true:
+								loop players in radius 4 around player:
+									execute console command "playsound mob.endermen.portal %loop-player%"
+								execute console command "playsound mob.endermen.portal %name of player%"
+							teleport player to {warpbox.warp.%line 2 of clicked block%}
+							{@wb_effects_sound} is true:
+								loop players in radius 4 around player:
+									execute console command "playsound mob.endermen.portal %loop-player%"
+								execute console command "playsound mob.endermen.portal %name of player%"
+							send "&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f%line 2 of clicked block%&7."
+							stop
+						send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac tego warpu."
+						stop
+					{@wb_wait} is true:
+						player does not have permission "warpbox.nieczekaj":
+							send "&f&l[&fwarpbox&l] &7Teleportacja nastapi za &f{@wb_wait_time} &7sek. (nie ruszaj sie)"
+							set {_posx} to x-location of player
+							set {_posy} to y-location of player
+							set {_posz} to z-location of player
+							set {_time} to {@wb_wait_time}
+							{@wb_effects_visual} is true:
+								apply nausea to player for 3 minutes
+							wait 1 second
+							loop {@wb_wait_time} times:
+								difference between x-location of player and {_posx} is bigger than 0.5:
+									send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+									{@wb_effects_visual} is true:
+										remove nausea from the player
+									stop
+								difference between z-location of player and {_posz} is bigger than 0.5:
+									send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+									{@wb_effects_visual} is true:
+										remove nausea from the player
+									stop
+								difference between y-location of player and {_posy} is bigger than 0.5:
+									send "&f&l[&fwarpbox&l] &7Teleportacja przerwana."
+									{@wb_effects_visual} is true:
+										remove nausea from the player
+									stop
+								add -1 to {_time}
+								{_time} is 0:
+									{@wb_effects_sound} is true:
+										loop players in radius 4 around player:
+											execute console command "playsound mob.endermen.portal %loop-player%"
+										execute console command "playsound mob.endermen.portal %name of player%"
+									teleport player to {warpbox.warp.%line 2 of clicked block%}
+									{@wb_effects_sound} is true:
+										loop players in radius 4 around player:
+											execute console command "playsound mob.endermen.portal %loop-player%"
+										execute console command "playsound mob.endermen.portal %name of player%"
+									send "&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f%line 2 of clicked block%&7."
+									{@wb_effects_visual} is true:
+										remove nausea from the player
+									stop
+								{_time} is smaller than 4:
+									send "&f&l[&fwarpbox&l] &7Teleportacja nastapi za &f%{_time}%&7."
+								wait 1 second
+					{@wb_effects_sound} is true:
+						loop players in radius 4 around player:
+							execute console command "playsound mob.endermen.portal %loop-player%"
+						execute console command "playsound mob.endermen.portal %name of player%"
+					teleport the player to {warpbox.warp.%line 2 of clicked block%}
+					{@wb_effects_sound} is true:
+						loop players in radius 4 around player:
+							execute console command "playsound mob.endermen.portal %loop-player%"
+						execute console command "playsound mob.endermen.portal %name of player%"
+					send "&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f%line 2 of clicked block%&7."
+					stop
+				send "&f&l[&fwarpbox&l] &7Taki warp nie istnieje."
+			line 2 of clicked block is empty:
+				send "&f&l[&fwarpbox&l] &7Tabliczka jest wadliwa..."
+			stop
+		send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac takich tabliczek."
+		stop
+
+on break of sign:
+	line 1 of block is "&f[WarpBox]":
+		player has permission "warpbox.*" or "warpbox.tabliczki.tworz":
+			line 2 of block is not empty:
+				send "&f&l[&fwarpbox&l] &7Tabliczka zostala pomyslnie usunieta."
+				stop
+			send "&f&l[&fwarpbox&l] &7Ta tabliczka byla wadliwa..."
+			stop
+		send "&f&l[&fwarpbox&l] &7Nie mozesz niszczyc takich tabliczek."
+		cancel event
+		stop
+
+on break:
+	loop blocks in radius 1 of event-block:
+		loop-block is sign
+		line 1 of loop-block is "&f[WarpBox]"
+		player does not have permission "warpbox.*" or "warpbox.tabliczki.tworz"
+		cancel event
+		send "&f&l[&fwarpbox&l] &7Nie mozesz niszczyc takich tabliczek."
+
+#------------------------------------------------------#
+#                  Komendy wewnętrzne                  #
+#------------------------------------------------------#
+command /warpbox [<text="info">] [<text>]:
+	aliases: wb
+	trigger:
+		arg 1 is "info":
+			send "&f----- &l[ &fWarpBox &l] -----"
+			send "&7 wersja: {@version}"
+			send "&7 autor: Adam Poloczek (PiratJaskiniowy)"
+			send "&7 url: http://adampoloczek.pl/warpbox/"
+			send "&fJak korzystac ze skryptu: /wb pomoc"
+			stop
+		arg 1 is "reload" or "przeladuj":
+			sender is console:
+				execute console command "skript reload %script%"
+				send "&f&l[&fwarpbox&l] &7Przeladowano skrypt WarpBox."
+				stop
+			player has permission "warpbox.*" or "warpbox.przeladuj":
+				execute console command "skript reload %script%"
+				send "&f&l[&fwarpbox&l] &7Przeladowales/as skrypt WarpBox."
+				stop
+			send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy."
+			stop
+		arg 1 is "pomoc" or "help" or "?":
+			sender is console:
+				arg 2 is "tabliczki":
+					send "&f----- &l[ &fWarpBox &l] -----"
+					send "&fJak tworzyc tabliczki?"
+					send "&7linijka 1: [wb] lub [warp]"
+					send "&7linijka 2: nazwa warpu"
+					send "&fKomendy? &7/wb pomoc"
+					stop
+				send "&f----- &l[ &fWarpBox &l] -----"
+				send "&7 <> - obowiazkowo, [] - opcjonalnie"
+				send "&fLista komend skryptu:"
+				send "&7/skoczdo <nazwa warpu> &f- teleportuje do okreslonego warpu"
+				send "&7/ustawwarp <nazwa warpu> &f- ustawia warp"
+				send "&7/usunwarp <nazwa warpu> &f- usuwa dany warp"
+				send "&7/listawarpow &f- wyswietla liste warpow"
+				send "&7/warpbox [info/przeladuj/pomoc]"
+				send "&fJak tworzyc tabliczki? &7/wb pomoc tabliczki"
+				stop
+			player has permission "warpbox.*" or "warpbox.pomoc":
+				arg 2 is "tabliczki":
+					send "&f----- &l[ &fWarpBox &l] -----"
+					send "&fJak tworzyc tabliczki?"
+					send "&7linijka 1: [wb] lub [warp]"
+					send "&7linijka 2: nazwa warpu"
+					send "&fKomendy? &7/wb pomoc"
+					stop
+				send "&f----- &l[ &fWarpBox &l] -----"
+				send "&7 <> - obowiazkowo, [] - opcjonalnie"
+				send "&fLista komend skryptu:"
+				send "&7/skoczdo <nazwa warpu> &f- teleportuje do okreslonego warpu"
+				send "&7/ustawwarp <nazwa warpu> &f- ustawia warp"
+				send "&7/usunwarp <nazwa warpu> &f- usuwa dany warp"
+				send "&7/listawarpow &f- wyswietla liste warpow"
+				send "&7/warpbox [info/przeladuj/pomoc]"
+				send "&fJak tworzyc tabliczki? &7/wb pomoc tabliczki"
+				stop
+			send "&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy."
+			stop
+		send "&f&l[&fwarpbox&l] &7Taka komenda nie istnieje."
+		stop
+
+#------------------------------------------------------#
+#                   = = = = = = = =                    #
+#------------------------------------------------------#
+on script load:
+	send "&f[warpbox] &7Aktywowano wersje &f{@version}&7." to console
+on script unload:
+	send "&f[warpbox] &7Deaktywowano wersje &f{@version}&7." to console
+
+#-------------------------------------------------- Koniec skryptu --------------------------------------------------#
+#--------------------- © by Adam Poloczek (PiratJaskiniowy) - Strona: http://adampoloczek.pl ------------------------#
