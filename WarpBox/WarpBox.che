@@ -1,0 +1,88 @@
+# WarpBox v1.0.0
+# Autor: Adam Poloczek (PiratJaskiniowy)
+# URL: http://my-bukkit.pl/index.php?/topic/303-skriptcmdhelper-warpbox-system-warpow-z-polskimi-komendami/
+*:/'warp' [$warp=''] [$] = >>>
+if(!has_permission('warpbox.warp' or 'warpbox.*')) {die(colorize('&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy.'))}
+@value = get_value('warps')
+if(!is_array(@value) || @value == null){store_value('warps', array())}
+@warp = ($warp)
+@warps = array_keys(@value)
+if(@warp == ''){die(colorize('&f&l[&fwarpbox&l] &7Podaj nazwe warpa. &f/warp <nazwa warpa>'))}
+	@warp = to_upper(substr($warp, 0, 1)).to_lower(substr($warp, 1))
+	try(
+		@match = reg_match('(?i)\\b'.@warp.'\\w*\\b', array_implode(@warps, ' '))[0]
+		@location = @value[@match]
+		set_ploc(player(), @location['ploc'])
+		pfacing(player(), @location['pfacing'][0], @location['pfacing'][1])
+		msg(colorize('&f&l[&fwarpbox&l] &7Zostales przeniesiony do &f'.@match.'&7.')),
+		die(colorize('&f&l[&fwarpbox&l] &7Taki warp nie istnieje. &f/warps'))
+	)
+<<<
+
+# Ustawianie warpów
+*:/'setwarp' [$warp=''] [$] = >>>
+if(!has_permission('warpbox.tworz' or 'warpbox.*')) {die(colorize('&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy.'))}
+@value = get_value('warps')
+if(!is_array(@value) || @value == null){store_value('warps', array())}
+if($warp == ''){die(colorize('&f&l[&fwarpbox&l] &7Podaj nazwe warpa. &f/setwarp <nazwa warpa>'))}
+@warp = to_upper(substr($warp, 0, 1)).to_lower(substr($warp, 1))
+@warps = array_keys(@value)
+	array_set(@value, @warp, array(
+		'ploc': ploc(),
+		'pfacing': pfacing(),
+	))
+if(array_contains_ic(@warps, @warp)){@status = 'Zmieniles pozycje warpu'}
+else{@status = 'Stworzyles warp'}
+store_value('warps', @value)
+msg(colorize('&f&l[&fwarpbox&l] &7'.@status.' &f'.@warp.'&7.'))
+<<<
+
+# Usuwanie warpów
+*:/'delwarp' [$warp=''] [$] = >>>
+@value = get_value('warps')
+if(!has_permission('warpbox.usun' or 'warpbox.*')){die(colorize('&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy.'))}
+if(!is_array(@value) || @value == null){store_value('warps', array())}
+if($warp == ''){die(colorize('&f&l[&fwarpbox&l] &7Podaj nazwe warpa. &f/usunwarp <nazwa warpa>'))}
+	@warps = array_keys(@value)
+	try(
+		@match = reg_match('(?i)\\b'.$warp.'\\w*\\b', array_implode(@warps, ' '))[0]
+		array_remove(@value, @match)
+		store_value('warps', @value)
+		msg(colorize('&f&l[&fwarpbox&l] &7Warp &f'.@match.'&7 zostal usuniety.')),
+		die(colorize('&f&l[&fwarpbox&l] &7Taki warp nie istnieje. &f/warps'))
+	)
+<<<
+
+# Lista warpów
+*:/'warps' [$] = >>>
+if(!has_permission('warpbox.lista' or 'warpbox.*')) {die(colorize('&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy.'))}
+@value = get_value('warps')
+if(!is_array(@value) || @value == null){store_value('warps', array())}
+if(!array_index_exists(@value, 1)){die(colorize('&f&l[&fwarpbox&l] &7Brak dostepnych warpow.'))}
+	@warps = array_keys(@value)msg(colorize('&f&l[&fwarpbox&l] &7Lista warpow:\n&f'.array_implode(@warps, '&7, &f')))
+<<<
+
+*:/'warpbox' [$arg] [$] = >>>
+if($arg == '?' || $arg == 'pomoc' || $arg == 'help'){
+	if(!has_permission('warpbox.pomoc' or 'warpbox.*')) {die(colorize('&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy.'))}
+	msg(colorize('&f----- &l[ &fWarpBox &l] -----'))
+	msg(colorize('&7 <> - wymagane, [] - opcjonalne'))
+	msg(colorize('&fKomendy:'))
+	msg(colorize('&7/skoczdo <nazwa warpu> &f- przenosi do danego warpu'))
+	msg(colorize('&7/ustawwarp <nazwa warpu> &f- tworzy warp'))
+	msg(colorize('&7/usunwarp <nazwa warpu> &f- usuwa warp'))
+	msg(colorize('&7/listawarpow &f- wyswietla liste warpow'))
+	msg(colorize('&7/warpbox [info/pomoc]'))
+	die(colorize('&fInformacje na temat skryptu: &7/wb'))}
+msg(colorize('&f----- &l[ &fWarpBox &l] -----'))
+msg(colorize('&7 wersja: 1.0.0'))
+msg(colorize('&7 author: Adam Poloczek (PiratJaskiniowy)'))
+msg(colorize('&fJak uzywac skryptu: /wb ?'))
+<<<
+# Aliasy
+*:/wb [$] = >>>if($ == '?' || $ == 'pomoc' || $ == 'help'){call_alias('/warpbox pomoc')die()}call_alias('/warpbox')<<<
+*:/listawarpow [$] = >>>call_alias('/warps')<<<
+*:/warplist [$] = >>>call_alias('/warps')<<<
+*:/skoczdo [$] = >>>call_alias('/warp '.$)<<<
+*:/usunwarp [$] = >>>call_alias('/delwarp '.$)<<<
+*:/ustawwarp [$] = >>>call_alias('/setwarp '.$)<<<
