@@ -1,0 +1,72 @@
+# Zegar v2.2.0
+# Autor: Adam Poloczek (PiratJaskiniowy)
+# Licencja: Attribution-NonCommercial-NoDerivs 3.0 Unported
+# (http://creativecommons.org/licenses/by-nc-nd/3.0/)
+# - - - - - - - - - - -
+# Aby zegarek poprawnie działał wymagana jest odpowiednia konfiguracja pluginu Skript:
+# linię 117 ustawiamy na "date format: dd/MM/yyyy HH:mm:ss-"
+# - - -
+command /zegar [<text>]:
+	trigger:
+		sender is console:
+			arg is not set:
+				# Godzina:
+				set {_index} to 0
+				set {_index2} to 0
+				set {_index3} to 0
+				loop 24 times:
+					"%now%" contains "%{_index}%:":
+						set {zegar.godziny} to {_index}
+					add 1 to {_index}
+				loop 60 times:
+					{_index2} is smaller than 10:
+						"%now%" contains ":0%{_index2}%:":
+							set {zegar.minuty} to {_index2}
+					"%now%" contains ":%{_index2}%:":
+						set {zegar.minuty} to {_index2}
+					add 1 to {_index2}
+				loop 60 times:
+					{_index3} is smaller than 10:
+						"%now%" contains ":0%{_index3}%-":
+							set {zegar.sekundy} to {_index3}
+					"%now%" contains ":%{_index3}%-":
+						set {zegar.sekundy} to {_index3}
+					add 1 to {_index3}
+				# Data:
+				set {_index4} to 1
+				set {_index5} to 1
+				set {_index6} to 2013
+				loop 12 times:
+					"%now%" contains "/%{_index4}%/" or "/0%{_index4}%/":
+						set {zegar.miesiac} to {_index4}
+					add 1 to {_index4}
+				loop 31 times:
+					"%now%" contains "%{_index5}%/" or "0%{_index5}%/":
+						set {zegar.dzien} to {_index5}
+					add 1 to {_index5}
+				loop 10 times:
+					"%now%" contains "/%{_index6}% ":
+						set {zegar.rok} to {_index6}
+					add 1 to {_index6}	
+				send "&f[zegar] Aktualny czas: &7%{zegar.godziny}%:%{zegar.minuty}%:%{zegar.sekundy}%"
+				send "&f[zegar] Aktualna data: &7%{zegar.dzien}%.%{zegar.miesiac}%.%{zegar.rok}%"
+				stop
+			send "&f[zegar] Aktualny czas: &7%{zegar.godziny}%:%{zegar.minuty}%:%{zegar.sekundy}%"
+			send "&f[zegar] Aktualna data: &7%{zegar.dzien}%.%{zegar.miesiac}%.%{zegar.rok}%"
+			stop
+		kick player due to "Majstrowanie przy czasie jest niebezpieczne!"
+every 1 seconds:
+	add 1 to {zegar.sekundy}
+	{zegar.sekundy} is greater than or equal to 60:
+		add 1 to {zegar.minuty}
+		set {zegar.sekundy} to 0
+	{zegar.minuty} is greater than or equal to 60:
+		add 1 to {zegar.godziny}
+		set {zegar.minuty} to 0
+	{zegar.godziny} is greater than or equal to 24:
+		set {zegar.sekundy} to 0
+		set {zegar.minuty} to 0
+		set {zegar.godziny} to 0
+	set {zegar.godzina} to "%{zegar.godziny}%:%{zegar.minuty}%:%{zegar.sekundy}%"
+on script load:
+	execute console command "zegar"
