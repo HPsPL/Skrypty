@@ -1,0 +1,114 @@
+# InfoBot+ v1.0
+# Autor: Adam Poloczek(PiratJaskiniowy)
+# URL: 
+
+# Konfiguracja:
+options:
+	# czas w minutach pomiędzy komunikatami
+	time: 5
+	# perfix przed komunikatami (aby anulować: none)
+	perfix: none
+
+# Właściwy kod skryptu. [Nie edytować!]
+# |: komenda
+command /infobot [<text>] [<text>]:
+	aliases: infb, ib
+	trigger:
+		# -: debug (lista komunikatów)
+		arg 1 is "debug":
+			player has permission "infobot.debug":
+				send "&e[Debug] &flicznik: &7%{infobot.msg}%"
+				if {@time} is not more than 0:
+					send "&e[Debug] &f@time: &c{@time}"
+					send "&e[Debug] &fZmien opcje &7time &fna liczbe wieksza od zera."
+				else:
+					send "&e[Debug] &f@time: &7{@time} min (%{@time} * 60% sek)"
+				if "{@perfix}" is "none":
+					send "&e[Debug] &f@perfix: &7brak"
+				else:
+					send "&e[Debug] &f@perfix: &r{@perfix}"
+				if size of {infobot::*} is 0:
+					send "&e[Debug] &fliczba komunikatow: &c0"
+					send "&e[Debug] &fUzyj komendy: &7/ib add <tresc komunikatu>"
+				else:
+					send "&e[Debug] &flista komunikatow (%size of {infobot::*}%):"
+					loop {infobot::*}:
+						send "&7%loop-index%: &r%colored loop-value%"
+				stop
+			send "&c[Error] &fNie masz uprawnien aby to zrobic! &7infobot.debug"
+			stop
+		# -: add (dodawanie/edytowanie komunikatów)
+		arg 1 is "add":
+			player has permission "infobot.add":
+				arg 2 is set:
+					add arg 2 to {infobot::*}
+					loop {infobot::*}:
+						loop-value is arg 2
+						send "&a[Ok] &fDodales/as nowy komunikat &7(%loop-index%)&f:"
+					send "%colored arg 2%"
+					stop
+				send "&c[Error] &fPodaj tresc komunikatu. &7/ib add <tresc komunikatu>"
+				stop
+			send "&c[Error] &fNie masz uprawnien aby to zrobic! &7infobot.add"
+			stop
+		# -: del (usuwanie komunikatów)
+		arg 1 is "del":
+			player has permission "infobot.del":
+				arg 2 is set:
+					{infobot::%arg 2%} is set:
+						delete {infobot::%arg 2%}
+						send "&a[Ok] &fUsunales/as komunikat. &7%arg 2%"
+						stop
+					send "&c[Error] &fKomunikat o takim numerze nie istnieje. &7%arg 2%"
+					stop
+				send "&c[Error] &fPodaj numer komunikatu. &7/ib del <numer komunikatu>"
+				stop
+			send "&c[Error] &fNie masz uprawnien aby to zrobic! &7infobot.del"
+			stop
+		# -: (dostępne argumenty)
+		send "&c[Error] &fDostepne argumenty: &7debug, add, del"
+
+# |: info na konsolę
+on script load:
+	# -: (sprawdzenie konfiguracji)
+	{@time} is not more than 0:
+		send "&c[Error] &fBledna konfiguracja skryptu! &7/ib debug" to console
+		stop
+	# -: (sprawdzenie ilości komunikatów)
+	size of {infobot::*} is 0:
+		send "&c[Error] &fNie wykryto zadnych komunikatow! &7/ib add <tresc komunikatu>" to console
+		stop
+	# -: wartość początkowa licznika ogólnego (zdefiniowanie komunikatu początkowego)
+	set {infobot.msg} to 1
+	# -: (brak błędów w konfiguracji, istnieje co najmniej 1 komunikat)
+	send "&a[Ok] &fWykryto %size of {infobot::*}% komunikatow. &7%script%" to console
+
+# |: wysyłacz wiadomości
+every {@time} seconds:
+	# -: (wykrywanie komunikatów)
+	size of {infobot::*} is 0:
+		send "&c[Error] &fNie wykryto zadnych komunikatow! &7/ib add <tresc komunikatu>" to console
+		stop
+	# -: (reset licznika)
+	{infobot.msg} is size of {infobot::*}+1:
+		set {infobot.msg} to 1
+		stop
+	# -|: (wysyłanie komunikatów)
+	# -: (licznik dostępnych komunikatów)
+	set {_index} to 1
+	loop {infobot::*}:
+		# -: (sprawdzanie czy komunikat na liczniku komunikatów odpowiada temu na liczniku ogólnym)
+		{_index} is {infobot.msg}:
+			# -|: (właściwe wysłanie wiadomości)
+			# -: (wykrywanie perfixu)
+			"{@perfix}" is not "none":
+				send "{@perfix} %colored loop-value%" to all players
+				exit loop
+			# |
+			send "%colored loop-value%" to all players
+			exit loop
+		# -: (+1 do licznika komunikatów)
+		add 1 to {_index}
+	# |
+	# -: (+1 do ogólnego licznika)
+	add 1 to {infobot.msg}
