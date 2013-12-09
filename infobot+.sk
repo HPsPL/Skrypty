@@ -5,7 +5,7 @@
 # Konfiguracja:
 options:
 	# czas w minutach pomiędzy komunikatami
-	time: 5
+	time: 2
 	# perfix przed komunikatami (aby anulować: none)
 	perfix: none
 
@@ -84,7 +84,7 @@ on script load:
 	send "&a[Ok] &fWykryto %size of {infobot::*}% komunikatow. &7%script%" to console
 
 # |: wysyłacz wiadomości
-every {@time} seconds:
+every {@time} minutes:
 	# -: (wykrywanie komunikatów)
 	size of {infobot::*} is 0:
 		send "&c[Error] &fNie wykryto zadnych komunikatow! &7/ib add <tresc komunikatu>" to console
