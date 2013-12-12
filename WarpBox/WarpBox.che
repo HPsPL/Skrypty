@@ -1,6 +1,6 @@
 # WarpBox v1.0.0
 # Autor: Adam Poloczek (PiratJaskiniowy)
-# URL: http://my-bukkit.pl/index.php?/topic/303-skriptcmdhelper-warpbox-system-warpow-z-polskimi-komendami/
+# URL: http://adampoloczek.pl/skrypty/warpbox/
 *:/'warp' [$warp=''] [$] = >>>
 if(!has_permission('warpbox.warp' or 'warpbox.*')) {die(colorize('&f&l[&fwarpbox&l] &7Nie mozesz uzywac tej komendy.'))}
 @value = get_value('warps')
