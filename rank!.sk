@@ -1,7 +1,7 @@
 # rank! v1.0.0
 # Autor: Adam Poloczek (PiratJaskiniowy)
-# Licencja: Close Script License v1.0
-# (https://github.com/adampoloczek/Skrypty/blob/master/Licencje/CSL%20v1.0)
+# Licencja: AP Close Script License v1.0
+# (https://raw.github.com/adampoloczek/Skrypty/master/Licencje/AP%20CSL%20v1.0)
 
 on join:
 	{rank.k::%name of player%} is not set:
