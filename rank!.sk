@@ -1,0 +1,145 @@
+# rank! v1.0.0
+# Autor: Adam Poloczek (PiratJaskiniowy)
+# Licencja: CC Attribution-NonCommercial-ShareAlike 3.0 Unported
+
+on join:
+	{rank.k::%name of player%} is not set:
+		set {rank.k::%name of player%} to 0
+	{rank.d::%name of player%} is not set:
+		set {rank.d::%name of player%} to 0
+	{rank.r::%name of player%} is not set:
+		set {rank.r::%name of player%} to 0
+
+on death of player:
+	attacker is a player
+	add 1 to {rank.d::%name of player%}
+	add -1 to {rank.r::%name of player%}
+	add 1 to {rank.k::%name of attacker%}
+	add 1 to {rank.r::%name of attacker%}
+
+command /rank [<text>]:
+	trigger:
+		arg is set:
+			arg is "top":
+				player has permission "rank.top":
+					send "&f[&6rank!&f] &etop 5"
+					set {_num} to size of {rank.r::*}
+					loop {_num} times:
+						loop {rank.r::*}:
+							{_v.%loop-number%} is not set:
+								set {_v.%loop-number%} to loop-value
+								set {_n.%loop-number%} to loop-index
+							loop-value is greater than {_v.%loop-number%}:
+								set {_v.%loop-number%} to loop-value
+								set {_n.%loop-number%} to loop-index
+						remove {_v.%loop-number%} from {rank.r::*}
+					loop {_num} times:
+						loop-number is less than or equal to 5:
+							{_v.%loop-number%} is less than 0:
+								set {_v} to {_v.%loop-number%} * -1
+								{_v.%loop-number%} is less than -999:
+									send "&f[0%loop-number%] (****) %{_n.%loop-number%}% - &ctotalna ofiara!"
+								{_v.%loop-number%} is between -100 and -999:
+									send "&f[0%loop-number%] (-&f%{_v}%) %{_n.%loop-number%}%"
+								{_v.%loop-number%} is between -10 and -99:
+									send "&f[0%loop-number%] (-&70&f%{_v}%) %{_n.%loop-number%}%"
+								{_v.%loop-number%} is between -9 and -1:
+									send "&f[0%loop-number%] (-&700&f%{_v}%) %{_n.%loop-number%}%"
+							{_v.%loop-number%} is between 0 and 10:
+								send "&f[0%loop-number%] (&7000&f%{_v.%loop-number%}%) %{_n.%loop-number%}%"
+							{_v.%loop-number%} is between 10 and 99:
+								send "&f[0%loop-number%] (&700&f%{_v.%loop-number%}%) %{_n.%loop-number%}%"
+							{_v.%loop-number%} is between 100 and 999:
+								send "&f[0%loop-number%] (&70&f%{_v.%loop-number%}%) %{_n.%loop-number%}%"
+							{_v.%loop-number%} is more than 999:
+								send "&f[0%loop-number%] (%{_v.%loop-number%}%) %{_n.%loop-number%}%"
+							set {rank.r::%{_n.%loop-number%}%} to {_v.%loop-number%}
+						{_num} is less than 5:
+							set {_r} to 1
+							loop 5 - {_num} times:
+								add 1 to {_r}
+								send "&f[0%{_r}%] (&70000&f) brak"
+					stop
+				send "&cNie mozesz uzywac tej komendy. :("
+				stop
+			player has permission "rank.others":
+				{rank.r::%arg%} is set:
+					send "&f[&6rank!&f] %arg%"
+					set {_num} to size of {rank.r::*}
+					loop {_num} times:
+						loop {rank.r::*}:
+							{_v.%loop-number%} is not set:
+								set {_v.%loop-number%} to loop-value
+								set {_n.%loop-number%} to loop-index
+							loop-value is greater than {_v.%loop-number%}:
+								set {_v.%loop-number%} to loop-value
+								set {_n.%loop-number%} to loop-index
+						remove {_v.%loop-number%} from {rank.r::*}
+					loop {_num} times:
+						{_n.%loop-number%} is arg:
+							{_v.%loop-number%} is less than 0:
+								set {_v} to {_v.%loop-number%} * -1
+								{_v.%loop-number%} is less than -999:
+									send "&erank: &f%loop-number% (****) - &ctotalna ofiara!"
+								{_v.%loop-number%} is between -100 and -999:
+									send "&erank: &f%loop-number% (-&f%{_v}%)"
+								{_v.%loop-number%} is between -10 and -99:
+									send "&erank: &f%loop-number% (-&70&f%{_v}%)"
+								{_v.%loop-number%} is between -9 and -1:
+									send "&erank: &f%loop-number% (-&700&f%{_v}%)"
+							{_v.%loop-number%} is between 0 and 10:
+								send "&erank: &f%loop-number% (&7000&f%{_v.%loop-number%}%)"
+							{_v.%loop-number%} is between 10 and 99:
+								send "&erank: &f%loop-number% (&700&f%{_v.%loop-number%}%)"
+							{_v.%loop-number%} is between 100 and 999:
+								send "&erank: &f%loop-number% (&70&f%{_v.%loop-number%}%)"
+							{_v.%loop-number%} is more than 999:
+								send "&erank: &f%loop-number% (%{_v.%loop-number%}%)"
+						set {rank.r::%{_n.%loop-number%}%} to {_v.%loop-number%}
+					send "&ekills: &f%{rank.k::%arg%}%"
+					send "&edeaths: &f%{rank.d::%arg%}%"
+					stop
+				send "&cNie znaleziono rankingu dla gracza &7%arg%&c."
+				stop
+			send "&cNie mozesz uzywac tej komendy. :("
+			stop
+		{rank.k::%name of player%} is not set:
+			set {rank.k::%name of player%} to 0
+		{rank.d::%name of player%} is not set:
+			set {rank.d::%name of player%} to 0
+		{rank.r::%name of player%} is not set:
+			set {rank.r::%name of player%} to 0
+		send "&f[&6rank!&f] %name of player%"
+		set {_num} to size of {rank.r::*}
+		loop {_num} times:
+			loop {rank.r::*}:
+				{_v.%loop-number%} is not set:
+					set {_v.%loop-number%} to loop-value
+					set {_n.%loop-number%} to loop-index
+				loop-value is greater than {_v.%loop-number%}:
+					set {_v.%loop-number%} to loop-value
+					set {_n.%loop-number%} to loop-index
+				remove {_v.%loop-number%} from {rank.r::*}
+		loop {_num} times:
+			{_n.%loop-number%} is player:
+				{_v.%loop-number%} is less than 0:
+					set {_v} to {_v.%loop-number%} * -1
+					{_v.%loop-number%} is less than -999:
+						send "&erank: &f%loop-number% (****) - &ctotalna ofiara!"
+					{_v.%loop-number%} is between -100 and -999:
+						send "&erank: &f%loop-number% (-&f%{_v}%)"
+					{_v.%loop-number%} is between -10 and -99:
+						send "&erank: &f%loop-number% (-&70&f%{_v}%)"
+					{_v.%loop-number%} is between -9 and -1:
+						send "&erank: &f%loop-number% (-&700&f%{_v}%)"
+				{_v.%loop-number%} is between 0 and 10:
+					send "&erank: &f%loop-number% (&7000&f%{_v.%loop-number%}%)"
+				{_v.%loop-number%} is between 10 and 99:
+					send "&erank: &f%loop-number% (&700&f%{_v.%loop-number%}%)"
+				{_v.%loop-number%} is between 100 and 999:
+					send "&erank: &f%loop-number% (&70&f%{_v.%loop-number%}%)"
+				{_v.%loop-number%} is more than 999:
+					send "&erank: &f%loop-number% (%{_v.%loop-number%}%)"
+			set {rank.r::%{_n.%loop-number%}%} to {_v.%loop-number%}
+		send "&ekills: &f%{rank.k::%name of player%}%"
+		send "&edeaths: &f%{rank.d::%name of player%}%"
